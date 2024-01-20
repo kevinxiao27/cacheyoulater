@@ -33,7 +33,7 @@ const page = () => {
                   placeholder:text-black sm:pl-[14px] pl-[8px] text-white bg-[#e7e7e7] border-2 border-[#747474]"
                     placeholder="Password"
                 />
-                <div className="mb-10 rounded-full outline-2 outline-black sm:w-1/3 w-1/2 border-2 border-black">
+                <div className="mb-24 rounded-full outline-2 outline-black sm:w-1/3 w-1/2 border-2 border-black">
                     <button
                         type="submit"
                         className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl"
