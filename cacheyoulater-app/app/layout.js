@@ -6,7 +6,7 @@ export default function RootLayout({children}) {
   return (
     <html>
       <body>
-        <main>
+        <main className='p-0'>
           <nav>
             <Link href="/">
               Home
