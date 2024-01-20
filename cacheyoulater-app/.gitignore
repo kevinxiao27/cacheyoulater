@@ -36,3 +36,6 @@ pocketbase
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#pocketbase
+pocketbase.exe
