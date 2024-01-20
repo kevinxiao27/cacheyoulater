@@ -4,7 +4,7 @@ import logo from "@/assets/vector/dash/logo.svg"
 import road_trip from "@/assets/raster/road_trip.png"
 
 ///____LOGIN____///
-import guy from "@/assets/vector/login/guy.svg"
+import guy from "@/assets/raster/guy.png"
 
 export {
     create_button, logo, road_trip, guy

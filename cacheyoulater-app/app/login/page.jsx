@@ -4,7 +4,7 @@ import { road_trip, guy } from "@/assets";
 
 const page = () => {
     return (
-        <div className="w-screen h-screen flex flex-col justify-center items-center">
+        <div className="w-screen h-screen flex flex-col justify-center items-center overflow-hidden">
             <div className="absolute z-10">
                 <Image
                     src={road_trip}
