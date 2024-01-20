@@ -16,7 +16,7 @@ async function getNotes() {
   // const result = await db.records.getList('notes');
   const res = await fetch('http://127.0.0.1:8090/api/collections/notes/records?page=1&perPage=30', { cache: 'no-store' });
   const data = await res.json();
-  return data?.items as any[];
+  return data?.items;
 }
 
 export default async function NotesPage() {
@@ -36,7 +36,7 @@ export default async function NotesPage() {
   );
 }
 
-function Note({ note }: any) {
+function Note({ note }) {
   const { id, title, content, created } = note || {};
 
   return (
