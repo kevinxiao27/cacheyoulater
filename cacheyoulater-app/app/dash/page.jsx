@@ -1,6 +1,6 @@
 'use client';
 
-import { create_button } from "@/assets";
+import { logo,create_button } from "@/assets";
 import Image from "next/image";
 import React, { useState } from "react";
 
