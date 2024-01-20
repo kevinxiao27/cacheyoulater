@@ -14,6 +14,12 @@ export default function RootLayout({children}) {
             <Link href="/notes">
               Notes
             </Link>
+            <Link href="/dash">
+              Dash
+            </Link>
+            <Link href="/login">
+              Login
+            </Link>
           </nav>
           {children}
         </main>
