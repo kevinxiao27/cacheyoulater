@@ -5,7 +5,7 @@ const Box = (props) => {
 
     return (
         <div
-            className="w-[70vw] h-[70vw] rounded-2xl border-2 border-black hover:scale-105 scale-100 transition duration-400 ease-linear"
+            className="w-[70vw] h-[70vw] rounded-2xl border-2 border-gray-300 hover:scale-105 scale-100 transition duration-400 ease-linear"
             onClick={() => {
                 jsoninfo(props.children);
             }}
