@@ -1,56 +1,41 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Image from "next/image"
-import { road_trip, guy } from "@/assets"
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { road_trip, guy } from "@/assets";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-
-  const handlePasswordAuth = async () => {
-    try {
-      // Password-based authentication
-      const authData = await pb
-        .collection("users")
-        .authWithPassword(username, password)
-
-      // Access auth data from the authStore
-      console.log(pb.authStore.isValid)
-      console.log(pb.authStore.token)
-      console.log(pb.authStore.model.id)
-
-      // Handle the authentication success as needed
-      console.log(authData)
-    } catch (error) {
-      // Handle any errors that occur during authentication
-      console.error(error)
-    }
-  }
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       // Your existing form submission logic
       const data = {
         username: username,
         password: password,
-      }
+      };
 
       // Make a request to authenticate the user
-      const response = await pb.collection("users").create(data)
+      const response = await fetch("http://localhost:8080/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
 
       // Handle the response as needed
-      console.log(response)
-
-      // Optionally, perform password-based authentication after the form submission
-      await handlePasswordAuth()
+      console.log(responseData);
     } catch (error) {
       // Handle any errors that occur during the request
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center overflow-hidden">
@@ -108,7 +93,7 @@ const LoginPage = () => {
         Login with Password
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

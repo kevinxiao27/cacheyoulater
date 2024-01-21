@@ -1,57 +1,43 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Image from "next/image"
-import { road_trip, guy } from "@/assets"
+import React, { useState } from "react";
+import Image from "next/image";
+import { road_trip, guy } from "@/assets";
 
-const LoginPage = () => {
-  const [email, setEmail] = useState("")
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-
-  const handlePasswordAuth = async () => {
-    try {
-      // Password-based authentication
-      const authData = await pb
-        .collection("users")
-        .authWithPassword(username, password)
-
-      // Access auth data from the authStore
-      console.log(pb.authStore.isValid)
-      console.log(pb.authStore.token)
-      console.log(pb.authStore.model.id)
-
-      // Handle the authentication success as needed
-      console.log(authData)
-    } catch (error) {
-      // Handle any errors that occur during authentication
-      console.error(error)
-    }
-  }
+const SignUpPage = () => {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       // Your existing form submission logic
       const data = {
         username: username,
+        email: email,
         password: password,
-      }
+      };
 
       // Make a request to authenticate the user
-      const response = await pb.collection("users").create(data)
+      const response = await fetch("http://localhost:8080/user/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const userdata = await response.json();
 
       // Handle the response as needed
-      console.log(response)
-
-      // Optionally, perform password-based authentication after the form submission
-      await handlePasswordAuth()
+      console.log(userdata);
     } catch (error) {
       // Handle any errors that occur during the request
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center overflow-hidden">
@@ -91,7 +77,7 @@ const LoginPage = () => {
                   placeholder:text-black sm:pl-[14px] pl-[8px] text-black bg-[#e7e7e7] border-2 border-[#747474]"
           placeholder="Username"
         />
-        
+
         <input
           type="password"
           value={password}
@@ -106,7 +92,7 @@ const LoginPage = () => {
             type="submit"
             className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl"
           >
-            Login
+            Register
           </button>
         </div>
       </form>
@@ -118,7 +104,7 @@ const LoginPage = () => {
         Login with Password
       </button> */}
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default SignUpPage;
