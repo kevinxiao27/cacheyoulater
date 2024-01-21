@@ -158,7 +158,7 @@ export const getCacheById = async (req, res, next) => {
   try {
     cache = await Cache.findById(id)
   } catch (error) {
-    return res.status(404).json({ message: "user not found" })
+    return res.status(404).json({ message: "Cache not found" })
   }
 
   let userId

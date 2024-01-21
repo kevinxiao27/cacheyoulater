@@ -1,4 +1,5 @@
 import User from "../models/User.js"
+import Cache from "../models/Cache.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
@@ -264,4 +265,54 @@ export const removeFriend = async (req, res, next) => {
   }
 
   res.status(200).json({ message: "User unfriended successfully" })
+}
+
+export const getAllFriendCaches = async (req, res, next) => {
+  const extractedToken = req.headers.authorization.split(" ")[1]
+  // const friend_id = req.params.id
+
+  if (!extractedToken && extractedToken.trim() === "") {
+    return res.status(404).json({ message: "Token not found." })
+  }
+
+  let userId
+  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+    if (err) {
+      return res.status(400).json({ message: `${err.message}` })
+    } else {
+      userId = decrypted.id
+      return
+    }
+  })
+  var findCaches = []
+  const user = await User.findById(userId)
+
+  let findCacheIds = [] // Initialize findCacheIds as an empty array
+  let caches = []
+
+  for (const friendId of user.friends) {
+    let cacheIds
+    try {
+      const friend = await User.findById(friendId)
+      cacheIds = friend.ownedCaches.filter(
+        (id) => !user.unlockedCaches.includes(id)
+      )
+    } catch (error) {
+      console.log({ message: "Could not find friend" })
+      return // Return here or handle the error accordingly
+    }
+    findCacheIds.push(...cacheIds)
+  }
+
+  console.log(findCacheIds)
+  for (const objectId of findCacheIds) {
+    try {
+      const cache = await Cache.findById(objectId.toString())
+      caches.push(cache.toJSON())
+    } catch (error) {
+      console.log({ message: "Couldn't find caches", error })
+      return
+    }
+  }
+  return res.status(200).json({ caches })
 }

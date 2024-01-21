@@ -7,11 +7,13 @@ import {
   deleteUser,
   addFriend,
   removeFriend,
+  getAllFriendCaches,
 } from "../controllers/user-controller.js"
 
 const userRouter = express.Router()
 
 userRouter.get("/", getAllUsers)
+userRouter.get("/friends", getAllFriendCaches)
 userRouter.post("/sign-up", createUser)
 userRouter.post("/login", login)
 userRouter.put("/:id", updateUser)
