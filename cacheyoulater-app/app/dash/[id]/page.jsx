@@ -10,11 +10,20 @@ import {
 } from "@/assets";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState, useInterval } from "react";
-import Box from "./tools/Box";
-import CreateCache from "./tools/CreateCache";
-import ViewCache from "./tools/ViewCache";
-import Congratulations from "./tools/Congratuations";
-import Prize from "./tools/Prize";
+import Box from "../tools/Box";
+import CreateCache from "../tools/CreateCache";
+import ViewCache from "../tools/ViewCache";
+import Congratulations from "../tools/Congratuations";
+import Prize from "../tools/Prize";
+import { usePathname } from "next/navigation";
+
+// async function getCache(userId) {
+//   const res = await fetch(`http://localhost:8080/user/friends/${userId}`, {
+//     next: { revalidate: 10 },
+//   });
+//   const data = await res.json();
+//   return data?.items;
+// }
 
 const page = () => {
   const [ButtonScaled, setButtonScaled] = useState(false);
@@ -38,7 +47,12 @@ const page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/cache");
+        const path = usePathname();
+        const userid = path.split("/")[2];
+        //   console.log(userid);
+        const response = await fetch(
+          `http://localhost:8080/user/friends/${userid}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
