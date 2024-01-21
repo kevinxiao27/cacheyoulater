@@ -16,8 +16,8 @@ const ViewCache = ({ buttonscaled }) => {
         <div
             className={`transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
         >
-            <div className="bg-white w-screen h-screen z-10 overflow-hidden">
-                <div className="absolute right-5 -mt-12">
+            <div className="bg-white w-screen z-10 overflow-hidden ">
+                <div className="absolute right-14 mt-6">
                     <Image
                         src={back}
                         width={50}
@@ -27,7 +27,7 @@ const ViewCache = ({ buttonscaled }) => {
                         onClick={() => buttonscaled(false)}
                     />
                 </div>
-                <div className="flex flex-row justify-left items-center pt-[18vh]">
+                <div className="flex flex-row justify-left items-center pt-[18vh] ">
                     <Image
                         src={profile}
                         width={50}
