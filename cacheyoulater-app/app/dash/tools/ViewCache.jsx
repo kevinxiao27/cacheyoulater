@@ -1,8 +1,17 @@
 import React from "react";
 import Image from "next/image";
-import { logo, create_button, Create_Cache, back, gold } from "@/assets";
+import {
+    logo,
+    create_button,
+    Create_Cache,
+    back,
+    gold,
+    map,
+    profile,
+    sample,
+} from "@/assets";
 
-const CreateCache = ({ buttonscaled }) => {
+const ViewCache = ({ buttonscaled }) => {
     return (
         <div
             className={`transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
@@ -18,49 +27,40 @@ const CreateCache = ({ buttonscaled }) => {
                         onClick={() => buttonscaled(false)}
                     />
                 </div>
-                <Image
-                    src={Create_Cache}
-                    width={200}
-                    height={200}
-                    alt={"create cache"}
-                    className="ml-8 pt-[15vh]"
-                />
-                <div className="flex flex-col w-screen h-[15vh] justify-center items-center mt-4 hover:cursor-pointer">
-                    <div className="italics rounded-md w-[80vw] h-[20vh] bg-[#d9d9d9] bg-opacity-30 outline-2 outline-dashed flex flex-row justify-center items-center">
-                        Upload Image
+                <div className="flex flex-row justify-left items-center pt-[18vh]">
+                    <Image
+                        src={profile}
+                        width={50}
+                        height={50}
+                        alt={"create cache"}
+                        className="ml-8"
+                    />
+                    <div>Hana</div>
+                </div>
+                <div className="flex flex-col w-screen justify-center items-center mt-4 hover:cursor-pointer">
+                    <div className="w-[80vw] h-[80vw] overflow-hidden">
+                        <Image
+                            src={sample}
+                            alt={"create cache"}
+                            style={{objectFit:"contain"}}
+                        />
                     </div>
                 </div>
-                <span className="ml-[10vw] mt-8">Message:</span>
-                <input
-                    type="text"
-                    className="rounded-md w-[80vw] ml-[10vw] h-[10vh] focus:outline-black
-                  placeholder:text-black text-white bg-[#d9d9d9] bg-opacity-30 border-2 border-[#747474]"
-                    placeholder="Username"
-                />
-                <span className="ml-[10vw]">Hint:</span>
-                <span className="italic text-sm text-gray-500">
-                    {" "}
-                    (optional)
-                </span>
-                <input
-                    type="text"
-                    className="rounded-md w-[80vw] ml-[10vw] h-8 focus:outline-black
-                  placeholder:text-black text-white bg-[#d9d9d9] bg-opacity-30 border-2 border-[#747474]"
-                    placeholder="Username"
-                />
+                <span className="ml-[10vw] mt-8">Hint: Near where we met when we were nine!</span>
+
                 <div className="w-screen flex flex-row justify-center items-center z-50 mt-8">
                     <div className="rounded-full outline-2 outline-black sm:w-1/3 w-2/3 border-2 border-black">
                         <button
                             type="submit"
                             className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl z-20"
                         >
-                            Create Cache
+                            Upload Image
                         </button>
                     </div>
                 </div>
-                <div className="w-screen flex flex-row justify-center items-center z-10 hover:cursor-pointer">
+                <div className="w-screen flex flex-row justify-center items-center z-10 hover:cursor-pointer mt-12">
                     <Image
-                        src={gold}
+                        src={map}
                         width={1000}
                         height={1000}
                         alt={"gold"}
@@ -72,4 +72,4 @@ const CreateCache = ({ buttonscaled }) => {
     );
 };
 
-export default CreateCache;
+export default ViewCache;
