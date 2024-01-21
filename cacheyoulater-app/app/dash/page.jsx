@@ -8,114 +8,112 @@ import CreateCache from "./tools/CreateCache";
 import ViewCache from "./tools/ViewCache";
 
 const page = () => {
-    const [ButtonScaled, setButtonScaled] = useState(false);
-    const [View_Cache, setViewCache] = useState(false);
+  const [ButtonScaled, setButtonScaled] = useState(false);
+  const [View_Cache, setViewCache] = useState(false);
 
-    const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
-    const [Bruh, setBruh] = useState(true);
+  const [Bruh, setBruh] = useState(true);
+  const [caches, setCaches] = useState([]);
 
-    const handleScroll = () => {
-        const scroll = window.scrollY;
-        console.log(scroll, isVisible);
-
-        const shouldBeVisible = scroll <= 40;
-        if (shouldBeVisible === isVisible) return;
-        setIsVisible(shouldBeVisible);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/cache");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        setCaches(data.caches);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error
+      }
     };
+    fetchData(); // Call the fetchData function when the component mounts
+  }, []);
 
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        setBruh(!Bruh);
-        console.log(window.scrollY);
-    }, []);
+  const handleScroll = () => {
+    const scroll = window.scrollY;
+    console.log(scroll, isVisible);
 
-    return (
-        <div className="relative w-screen h-screen z-20">
-            <div className="fixed z-10 pointer-events-none">
-                <div className="absolute flex flex-row justify-left items-center top-0 w-full h-[20vh]">
-                    <Image
-                        src={logo}
-                        width={200}
-                        height={200}
-                        alt={"bruh this is jsut a test chill"}
-                        className={`ml-2 -mt-8 z-10 visible transition-transform duration-300 transform ${
-                            isVisible ? "opacity-100" : "opacity-0"
-                        }`}
-                    />
-                </div>
-                <div className="w-screen h-screen overflow-hidden relative pointer-events-none">
-                    <div className="absolute bg-blur-2xl flex flex-row justify-center items-center bottom-0 w-full h-[20vh]">
-                        <Image
-                            src={create_button}
-                            width={75}
-                            height={75}
-                            alt={"(+)"}
-                            className={`${
-                                (ButtonScaled || View_Cache)
-                                    ? "scale-125 opacity-0 pointer-events-none"
-                                    : "scale-100 opacity-100 pointer-events-auto"
-                            }  transition duration-200 ease-in-out hover:cursor-pointer z-30`}
-                            onMouseDown={() => setButtonScaled(true)}
-                        />
-                    </div>
+    const shouldBeVisible = scroll <= 40;
+    if (shouldBeVisible === isVisible) return;
+    setIsVisible(shouldBeVisible);
+  };
 
-                    {/* ------ BUTTON SCALED ------- */}
-                    <div
-                        className={`${
-                            ButtonScaled
-                                ? "translate-y-[0vh]"
-                                : "translate-y-[100vh]"
-                        } transition duration-500 ease-in-out`}
-                    >
-                        <CreateCache buttonscaled={setButtonScaled} />
-                    </div>
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    setBruh(!Bruh);
+    console.log(window.scrollY);
+  }, []);
 
-                    {/* ------ VIEWCACHE ------- */}
-                    <div
-                        className={`${
-                            View_Cache
-                                ? "translate-y-[0vh]"
-                                : "translate-y-[100vh]"
-                        } transition duration-500 ease-in-out`}
-                    >
-                        <ViewCache buttonscaled={setViewCache} />
-                    </div>
-                </div>
-            </div>
-
-            {/* ------ BOXES ------- */}
-
-            <div className="bg-white w-screen flex flex-col justify-center items-center gap-5">
-                {/* BOXES */}
-                <div className="w-screen h-[10vh] overflow-visible" />
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-                <div onClick={() => setViewCache(true)}>
-                    <Box />
-                </div>
-            </div>
+  return (
+    <div className="relative w-screen h-screen z-20">
+      <div className="fixed z-10 pointer-events-none">
+        <div className="absolute flex flex-row justify-left items-center top-0 w-full h-[20vh]">
+          <Image
+            src={logo}
+            width={200}
+            height={200}
+            alt={"bruh this is jsut a test chill"}
+            className={`ml-2 -mt-8 z-10 visible transition-transform duration-300 transform ${
+              isVisible ? "opacity-100" : "opacity-0"
+            }`}
+          />
         </div>
-    );
+        <div className="w-screen h-screen overflow-hidden relative pointer-events-none">
+          <div className="absolute bg-blur-2xl flex flex-row justify-center items-center bottom-0 w-full h-[20vh]">
+            <Image
+              src={create_button}
+              width={75}
+              height={75}
+              alt={"(+)"}
+              className={`${
+                ButtonScaled || View_Cache
+                  ? "scale-125 opacity-0 pointer-events-none"
+                  : "scale-100 opacity-100 pointer-events-auto"
+              }  transition duration-200 ease-in-out hover:cursor-pointer z-30`}
+              onMouseDown={() => setButtonScaled(true)}
+            />
+          </div>
+
+          {/* ------ BUTTON SCALED ------- */}
+          <div
+            className={`${
+              ButtonScaled ? "translate-y-[0vh]" : "translate-y-[100vh]"
+            } transition duration-500 ease-in-out`}
+          >
+            <CreateCache buttonscaled={setButtonScaled} />
+          </div>
+
+          {/* ------ VIEWCACHE ------- */}
+          <div
+            className={`${
+              View_Cache ? "translate-y-[0vh]" : "translate-y-[100vh]"
+            } transition duration-500 ease-in-out`}
+          >
+            <ViewCache buttonscaled={setViewCache} />
+          </div>
+        </div>
+      </div>
+
+      {/* ------ BOXES ------- */}
+
+      <div className="bg-white w-screen flex flex-col justify-center items-center gap-5">
+        {/* BOXES */}
+        <div className="w-screen h-[10vh] overflow-visible" />
+        <div onClick={() => setViewCache(true)}>
+          {caches.map((cache) => (
+            <div>
+              <Box>{cache}</Box>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default page;
