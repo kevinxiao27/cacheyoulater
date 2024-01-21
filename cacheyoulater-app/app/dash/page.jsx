@@ -3,27 +3,29 @@
 import { logo, create_button, Create_Cache, back, gold } from "@/assets";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
-import Box from "./Box";
+import Box from "./tools/Box";
+import CreateCache from "./tools/CreateCache";
 
 const page = () => {
     const [ButtonScaled, setButtonScaled] = useState(false);
+    const [ViewCache, setViewCache] = useState(false);
 
     const [isVisible, setIsVisible] = useState(true);
 
-    const [Bruh, setBruh] = useState(true)
+    const [Bruh, setBruh] = useState(true);
 
     const handleScroll = () => {
         const scroll = window.scrollY;
         console.log(scroll, isVisible);
-         
+
         const shouldBeVisible = scroll <= 40;
         if (shouldBeVisible === isVisible) return;
         setIsVisible(shouldBeVisible);
-      };
+    };
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
-        setBruh(!Bruh)
+        setBruh(!Bruh);
         console.log(window.scrollY);
     }, []);
 
@@ -55,9 +57,22 @@ const page = () => {
                         />
                     </div>
 
+                    {/* ------ BUTTON SCALED ------- */}
                     <div
                         className={`${
                             ButtonScaled
+                                ? "translate-y-[0vh]"
+                                : "translate-y-[100vh]"
+                        } transition duration-500 ease-in-out`}
+                    >
+                        <CreateCache buttonscaled={setButtonScaled}/>
+                    </div>
+
+                    {/* ------ VIEWCACHE ------- */}
+
+                    <div
+                        className={`${
+                            ViewCache
                                 ? "translate-y-[0vh]"
                                 : "translate-y-[100vh]"
                         } transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
@@ -68,16 +83,16 @@ const page = () => {
                                     src={back}
                                     width={50}
                                     height={50}
-                                    alt={"create cache"}
+                                    alt={"view cache"}
                                     className="ml-8 pt-[15vh]"
-                                    onClick={() => setButtonScaled(false)}
+                                    onClick={() => setViewCache(false)}
                                 />
                             </div>
                             <Image
                                 src={Create_Cache}
                                 width={200}
                                 height={200}
-                                alt={"create cache"}
+                                alt={"view cache"}
                                 className="ml-8 pt-[15vh]"
                             />
                             <div className="flex flex-col w-screen h-[15vh] justify-center items-center mt-4 hover:cursor-pointer">
@@ -126,10 +141,15 @@ const page = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ------ BOXES ------- */}
+
             <div className="bg-white w-screen flex flex-col justify-center items-center gap-5">
                 {/* BOXES */}
                 <div className="w-screen h-[10vh] overflow-visible" />
-                <Box />
+                <div>
+                    <Box />
+                </div>
                 <Box />
                 <Box />
                 <Box />
