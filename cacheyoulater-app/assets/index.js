@@ -10,9 +10,11 @@ import back from "@/assets/vector/dash/create_cache/back.png"
 import map from "@/assets/vector/dash/view_cache/map.png"
 import profile from "@/assets/vector/dash/view_cache/profile.png"
 import sample from "@/assets/vector/dash/view_cache/sample.png"
+
+import Happy from "@/assets/vector/dash/congrats/Happy.png"
 ///____LOGIN____///
 import guy from "@/assets/raster/guy.png"
 
 export {
-    create_button, logo, road_trip, Create_Cache, gold, back, map, profile, sample, guy
+    create_button, logo, road_trip, Create_Cache, gold, back, map, profile, sample, Happy, guy
 }

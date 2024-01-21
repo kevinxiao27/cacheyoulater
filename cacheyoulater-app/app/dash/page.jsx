@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Box from "./tools/Box";
 import CreateCache from "./tools/CreateCache";
 import ViewCache from "./tools/ViewCache";
+import Congratulations from "./tools/Congratuations";
 
 const page = () => {
     const [ButtonScaled, setButtonScaled] = useState(false);
@@ -122,7 +123,8 @@ const page = () => {
                                 : "translate-y-[100vh]"
                         } transition duration-500 ease-in-out`}
                     >
-                        <CreateCache buttonscaled={setButtonScaled} />
+                        {/* <CreateCache buttonscaled={setButtonScaled} /> */}
+                        <Congratulations />
                     </div>
 
                     {/* ------ VIEWCACHE ------- */}
