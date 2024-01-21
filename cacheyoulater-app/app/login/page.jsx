@@ -10,8 +10,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  function navigate() {
-    router.push("/dash");
+  function navigate(id) {
+    router.push(`/dash/${id}`);
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +33,12 @@ const LoginPage = () => {
       }).then((t) => t.json());
 
       const token = response.token;
+      const id = response.id;
+      console.log(response);
+      console.log(id);
       console.log(token);
 
-      navigate();
+      navigate(id);
     } catch (error) {
       // Handle any errors that occur during the request
       console.error(error);
