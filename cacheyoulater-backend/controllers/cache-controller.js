@@ -143,91 +143,22 @@ export const getAllCaches = async (req, res, next) => {
     return res.status(500).json({ message: "Failed to get Bulletins" })
   }
 
-  return res.status(200).json({ bulletins: caches })
+  return res.status(200).json({ caches })
 }
 
 export const getCacheById = async (req, res, next) => {
-  const id = req.params.id
-  let bulletin
-
-  try {
-    bulletin = await Cache.findById(id)
-  } catch (error) {
-    console.log(error)
-  }
-
-  if (!bulletin) {
-    return res.status(404).json({ message: "Failed to find Cache" })
-  }
-
-  return res.status(200).json({ bulletin })
-}
-
-export const deleteCache = async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1]
   const id = req.params.id
-  let bulletin
 
-  try {
-    bulletin = await Cache.findById(id)
-  } catch (error) {
-    console.log(error)
-  }
-
-  if (!bulletin) {
-    return res.status(404).json({ message: "Failed to find Cache" })
-  }
   if (!extractedToken || extractedToken.trim() === "") {
     return res.status(404).json({ message: "Token not found" })
   }
 
-  let orgId
-  // verify -- then decrypt the token ==> then store the admin id from the token
-  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
-    if (err) {
-      return res.status(400).json({ message: `${err.message}` })
-    } else {
-      orgId = decrypted.id
-      return
-    }
-  })
-
-  if (bulletin.organization != orgId) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized to complete this action" })
-  }
-
-  let deleteBulletin
+  let cache
   try {
-    deleteBulletin = await Cache.findByIdAndDelete(id)
+    cache = await Cache.findById(id)
   } catch (error) {
-    console.log(error)
-  }
-
-  if (!deleteBulletin) {
-    return res.status(500).json({ message: "Something Unexpected Occured" })
-  }
-  console.log(deleteBulletin)
-  res.status(200).json({ message: "Cache Deleted Successfully" })
-}
-
-export const registerUser = async (req, res, next) => {
-  const extractedToken = req.headers.authorization.split(" ")[1]
-  const id = req.params.id
-  let bulletin
-
-  try {
-    bulletin = await Cache.findById(id)
-  } catch (error) {
-    console.log(error)
-  }
-
-  if (!bulletin) {
-    return res.status(404).json({ message: "Failed to find Cache" })
-  }
-  if (!extractedToken || extractedToken.trim() === "") {
-    return res.status(404).json({ message: "Token not found" })
+    return res.status(404).json({ message: "user not found" })
   }
 
   let userId
@@ -241,35 +172,20 @@ export const registerUser = async (req, res, next) => {
     }
   })
 
-  var registeredList = bulletin.registered
-  if (registeredList.includes(userId)) {
-    return res.status(401).json({ message: "Already Registered" })
-  } else {
-    registeredList.push(userId)
+  if (!cache) {
+    return res.status(404).json({ message: "Failed to find Cache" })
   }
 
-  // let updateBulletin
-  try {
-    const session = await mongoose.startSession()
-    const user = await User.findById(userId)
-    session.startTransaction()
-    bulletin.registered.push(user)
-    user.registeredBulletins.push(bulletin)
-    await bulletin.save({ session })
-    await user.save({ session })
-    await session.commitTransaction()
-  } catch (error) {
-    return console.log(error)
+  console.log(cache)
+  // console.log(cache)
+  if (cache.owner != userId && !cache.unlockedUsers.includes(userId)) {
+    return res.status(401).json({ message: "Haven't Unlocked this Cache" })
   }
 
-  if (!updateCache) {
-    return res.status(500).json({ message: "Registration failed" })
-  }
-
-  return res.status(200).json({ message: "Successfully Registered" })
+  return res.status(200).json({ cache })
 }
 
-export const deregisterUser = async (req, res, next) => {
+export const deleteCache = async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1]
   const id = req.params.id
   let cache
@@ -298,12 +214,65 @@ export const deregisterUser = async (req, res, next) => {
     }
   })
 
+  if (cache.owner != userId) {
+    return res.status(401)
+  }
+
+  let deleteCache
+  try {
+    deleteCache = await Cache.findByIdAndDelete(id)
+  } catch (error) {
+    console.log(error)
+  }
+
+  if (!deleteCache) {
+    return res.status(500).json({ message: "Something Unexpected Occured" })
+  }
+  console.log(deleteCache)
+  res.status(200).json({ message: "Cache Deleted Successfully" })
+}
+
+export const unlockCache = async (req, res, next) => {
+  const extractedToken = req.headers.authorization.split(" ")[1]
+  const id = req.params.id
+  let cache
+
+  try {
+    cache = await Cache.findById(id)
+  } catch (error) {
+    console.log(error)
+  }
+
+  if (!cache) {
+    return res.status(404).json({ message: "Failed to find Cache" })
+  }
+  if (!extractedToken || extractedToken.trim() === "") {
+    return res.status(404).json({ message: "Token not found" })
+  }
+
+  let userId
+  // verify -- then decrypt the token ==> then store the admin id from the token
+  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+    if (err) {
+      return res.status(400).json({ message: `${err.message}` })
+    } else {
+      userId = decrypted.id
+      return
+    }
+  })
+
+  if (cache.unlockedUsers.includes(userId)) {
+    return res.status(401).json({ message: "Already Unlocked" })
+  }
+
+  // let updateBulletin
   try {
     const session = await mongoose.startSession()
     const user = await User.findById(userId)
     session.startTransaction()
-    cache.registered.pull(user)
-    user.registeredBulletins.pull(cache)
+    cache.unlockedUsers.push(user)
+    user.unlockedCaches.push(cache)
+    await cache.save({ session })
     await user.save({ session })
     await session.commitTransaction()
   } catch (error) {
@@ -311,8 +280,8 @@ export const deregisterUser = async (req, res, next) => {
   }
 
   if (!updateCache) {
-    return res.status(500).json({ message: "Deregistration failed" })
+    return res.status(500).json({ message: "Registration failed" })
   }
 
-  return res.status(200).json({ message: "Successfully Deregistered" })
+  return res.status(200).json({ message: "Unlocked Cache!" })
 }

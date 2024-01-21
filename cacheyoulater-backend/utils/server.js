@@ -2,7 +2,7 @@ import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 import userRouter from "../views/user-router.js"
-import cacheRouter from "../views/bullet-router.js"
+import cacheRouter from "../views/cache-router.js"
 
 dotenv.config()
 
