@@ -41,7 +41,7 @@ const page = () => {
         <div className="relative w-screen h-screen z-20">
             <div className="fixed z-10 pointer-events-none">
                 <div className="absolute flex flex-row justify-left items-center top-0 w-full h-[20vh]">
-                    <div className={`${View_Cache ? "-translate-y-[15vh] opacity-20" : "translate-y-[0vh] opacity-100"} transition duration-900 ease-in-out w-screen flex flex-row justify-items-center`}>
+                    <div className={`${View_Cache ? "-translate-y-[15vh] opacity-20" : "translate-y-[0vh] opacity-100"} w-full mx-4 transition duration-900 ease-in-out flex flex-row justify-items-center bg-white bg-opacity-100 rounded-full pt-8 -mt-12 outline outline-black`}>
                         <Image
                             src={logo}
                             width={200}
@@ -54,7 +54,7 @@ const page = () => {
                         <Image
                             src={profile}
                             width={60}
-                            height={20}
+                            height={10}
                             alt={"bruh this is jsut a test chill"}
                             className={`ml-[12vh] -mt-8 z-10 visible transition-transform duration-300 transform ${
                                 isVisible ? "opacity-100" : "opacity-0"
