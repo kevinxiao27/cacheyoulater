@@ -3,11 +3,17 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { road_trip, guy } from "@/assets";
+import { useRouter } from "next/navigation";
+import create from "../utils/cookies";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
+  function navigate() {
+    router.push("/dash");
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,12 +31,12 @@ const LoginPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
+      }).then((t) => t.json());
 
-      const responseData = await response.json();
+      const token = response.token;
+      console.log(token);
 
-      // Handle the response as needed
-      console.log(responseData);
+      navigate();
     } catch (error) {
       // Handle any errors that occur during the request
       console.error(error);
@@ -85,13 +91,6 @@ const LoginPage = () => {
           </button>
         </div>
       </form>
-      {/* Password-based authentication button */}
-      <button
-        onClick={handlePasswordAuth}
-        className="bg-[#4285F4] rounded-full outline-2 outline-black w-1/5 flex flex-row justify-center items-center text-xl text-white mt-4"
-      >
-        Login with Password
-      </button>
     </div>
   );
 };
