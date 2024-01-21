@@ -3,11 +3,17 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { road_trip, guy } from "@/assets";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter()
+
+  function navigate() {
+    router.push('/login')
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +39,7 @@ const SignUpPage = () => {
 
       // Handle the response as needed
       console.log(userdata);
+      navigate();
     } catch (error) {
       // Handle any errors that occur during the request
       console.error(error);
@@ -91,6 +98,7 @@ const SignUpPage = () => {
           <button
             type="submit"
             className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl"
+            onClick={(e)=>handleSubmit(e)}
           >
             Register
           </button>
