@@ -98,7 +98,7 @@ export const updateCache = async (req, res, next) => {
   });
 
   if (cache.owner != userId) {
-    return res.status(401);
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   const { title, description, hint } = req.body;
@@ -129,7 +129,7 @@ export const updateCache = async (req, res, next) => {
     return res.status(500).json({ message: "Cache request failed." });
   }
 
-  return res.status(200).json({ updateBulletin: updateCache });
+  return res.status(200).json({ message: "Updated Cache successfully" });
 };
 
 export const getAllCaches = async (req, res, next) => {
