@@ -33,7 +33,7 @@ const CreateCache = ({ buttonscaled }) => {
                 <span className="ml-[10vw] mt-8">Message:</span>
                 <input
                     type="text"
-                    className="rounded-md w-[80vw] ml-[10vw] h-[10vh] focus:outline-black
+                    className="rounded-md w-full mx-[10vw] h-[10vh] focus:outline-black
                   placeholder:text-black text-white bg-[#d9d9d9] bg-opacity-30 border-2 border-[#747474]"
                     placeholder="Username"
                 />
