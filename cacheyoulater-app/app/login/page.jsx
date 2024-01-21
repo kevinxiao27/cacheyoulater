@@ -85,12 +85,6 @@ const LoginPage = () => {
           </button>
         </div>
       </form>
-      {/* Password-based authentication button */}
-      <button
-        className="bg-[#4285F4] rounded-full outline-2 outline-black w-1/5 flex flex-row justify-center items-center text-xl text-white mt-4"
-      >
-        Login with Password
-      </button>
     </div>
   );
 };

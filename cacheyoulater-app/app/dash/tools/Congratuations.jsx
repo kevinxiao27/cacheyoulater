@@ -15,6 +15,7 @@ const Congratulations = ({conductor}) => {
         top: 0,
         left: 0,
     };
+    
 
     // useEffect(() => {
     //     console.log("ra");
