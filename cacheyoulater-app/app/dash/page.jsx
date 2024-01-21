@@ -32,9 +32,9 @@ const page = () => {
                     onMouse
                 />
             </div>
-            <div className="bg-white h-screen w-screen">
+            {/* <div className="bg-white h-screen w-screen">
 
-            </div>
+            </div> */}
             <Create_cache />
         </div>
     );
