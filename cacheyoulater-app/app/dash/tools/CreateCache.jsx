@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { logo, create_button, Create_Cache, back, gold } from "@/assets";
+import Uploader from "./Uploader";
 
-const CreateCache = ({ buttonscaled }) => {
+const CreateCache = ({ buttonscaled, made, made2,  snd }) => {
+    const funct = () => {
+        if (!snd) {
+            made(true);
+            buttonscaled(true)
+        } else {
+            made(false);
+            made2(true);
+            buttonscaled(false)
+        }
+    }
     return (
         <div
             className={`transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
@@ -25,11 +36,12 @@ const CreateCache = ({ buttonscaled }) => {
                     alt={"create cache"}
                     className="ml-8 pt-[15vh]"
                 />
-                <div className="flex flex-col w-screen h-[15vh] justify-center items-center mt-4 hover:cursor-pointer">
+                {/* <div className="flex flex-col w-screen h-[15vh] justify-center items-center mt-4 hover:cursor-pointer">
                     <div className="italics rounded-md w-[80vw] h-[20vh] bg-[#d9d9d9] bg-opacity-30 outline-2 outline-dashed flex flex-row justify-center items-center">
                         Upload Image
                     </div>
-                </div>
+                </div> */}
+                <Uploader subbed={made}/>
                 <span className="ml-[10vw] mt-8">Message:</span>
                 <input
                     type="text"
@@ -52,6 +64,7 @@ const CreateCache = ({ buttonscaled }) => {
                     <div className="rounded-full outline-2 outline-black sm:w-1/3 w-2/3 border-2 border-black">
                         <button
                             type="submit"
+                            onClick={()=>{funct()}}
                             className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl z-20"
                         >
                             Create Cache

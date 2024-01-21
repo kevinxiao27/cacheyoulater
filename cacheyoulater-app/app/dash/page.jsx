@@ -15,11 +15,16 @@ import CreateCache from "./tools/CreateCache";
 import ViewCache from "./tools/ViewCache";
 import Congratulations from "./tools/Congratuations";
 import Prize from "./tools/Prize";
+import MadeCache from "./tools/MadeCache";
+import Confirm from "./tools/Confirm";
 
 const page = () => {
   const [ButtonScaled, setButtonScaled] = useState(false);
   const [View_Cache, setViewCache] = useState(false);
-
+  const [Congrats, setCongrats] = useState(false);
+  const [Made0, setMade0] = useState(false);
+  const [Made, setMade] = useState(false);
+  const [Prized, setPrize] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
   const [RSelected, setRSelected] = useState({
@@ -34,6 +39,26 @@ const page = () => {
 
   const [Bruh, setBruh] = useState(true);
   const [caches, setCaches] = useState([]);
+
+  useEffect(() => {
+    if (Congrats) {
+      const swap = () => {
+        setCongrats(false);
+        setPrize(true);
+        console.log("congrats!");
+      };
+      const interval = setInterval(swap, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [Congrats]);
+
+  useEffect(() => {
+    if (Made) {
+      console.log("congrats!");
+      const inter = setInterval(setMade(true), 3000);
+      return () => clearInterval(inter);
+    }
+  }, [Made]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,21 +76,6 @@ const page = () => {
       }
     };
     fetchData(); // Call the fetchData function when the component mounts
-  }, []);
-
-  const handleScroll = () => {
-    const scroll = window.scrollY;
-    console.log(scroll, isVisible);
-
-    const shouldBeVisible = scroll <= 40;
-    if (shouldBeVisible === isVisible) return;
-    setIsVisible(shouldBeVisible);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    setBruh(!Bruh);
-    console.log(window.scrollY);
   }, []);
 
   return (
@@ -107,12 +117,22 @@ const page = () => {
               height={75}
               alt={"(+)"}
               className={`${
-                ButtonScaled || View_Cache
+                Congrats || View_Cache
                   ? "scale-125 opacity-0 pointer-events-none"
                   : "scale-100 opacity-100 pointer-events-auto"
               }  transition duration-200 ease-in-out hover:cursor-pointer z-30`}
               onMouseDown={() => setButtonScaled(true)}
             />
+          </div>
+
+          {/* ------ PARTY ------- */}
+          <div
+            className={`${
+              Congrats ? "translate-y-[0vh]" : "translate-y-[100vh]"
+            } transition duration-500 ease-in-out z-40`}
+          >
+            {/* <CreateCache buttonscaled={setButtonScaled} /> */}
+            <Congratulations conductor={Congrats} />
           </div>
 
           {/* ------ BUTTON SCALED ------- */}
@@ -122,7 +142,7 @@ const page = () => {
             } transition duration-500 ease-in-out`}
           >
             {/* <CreateCache buttonscaled={setButtonScaled} /> */}
-            <Congratulations />
+            <CreateCache buttonscaled={setButtonScaled} />
           </div>
 
           {/* ------ VIEWCACHE ------- */}
