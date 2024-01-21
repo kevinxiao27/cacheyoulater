@@ -3,6 +3,7 @@
 import { logo, create_button } from "@/assets";
 import Image from "next/image";
 import React, { useState } from "react";
+import Create_cache from "./Create_cache";
 
 const page = () => {
     const [ButtonScaled, setButtonScaled] = useState(false);
@@ -31,6 +32,10 @@ const page = () => {
                     onMouse
                 />
             </div>
+            <div className="bg-white h-screen w-screen">
+
+            </div>
+            <Create_cache />
         </div>
     );
 };
