@@ -9,16 +9,18 @@ import {
   profile,
 } from "@/assets";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useInterval } from "react";
 import Box from "./tools/Box";
 import CreateCache from "./tools/CreateCache";
 import ViewCache from "./tools/ViewCache";
 import Congratulations from "./tools/Congratuations";
+import Prize from "./tools/Prize";
 
 const page = () => {
   const [ButtonScaled, setButtonScaled] = useState(false);
   const [View_Cache, setViewCache] = useState(false);
-
+  const [Congrats, setCongrats] = useState(false);
+  const [Prized, setPrize] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
   const [RSelected, setRSelected] = useState({
@@ -33,6 +35,18 @@ const page = () => {
 
   const [Bruh, setBruh] = useState(true);
   const [caches, setCaches] = useState([]);
+
+  useEffect(() => {
+    if (Congrats) {
+      const swap = () => {
+        setCongrats(false);
+        setPrize(true);
+        console.log("congrats!");
+      };
+      const interval = setInterval(swap, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [Congrats]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,12 +120,22 @@ const page = () => {
               height={75}
               alt={"(+)"}
               className={`${
-                ButtonScaled || View_Cache
+                Congrats || View_Cache
                   ? "scale-125 opacity-0 pointer-events-none"
                   : "scale-100 opacity-100 pointer-events-auto"
               }  transition duration-200 ease-in-out hover:cursor-pointer z-30`}
               onMouseDown={() => setButtonScaled(true)}
             />
+          </div>
+
+          {/* ------ PARTY ------- */}
+          <div
+            className={`${
+              Congrats ? "translate-y-[0vh]" : "translate-y-[100vh]"
+            } transition duration-500 ease-in-out z-40`}
+          >
+            {/* <CreateCache buttonscaled={setButtonScaled} /> */}
+            <Congratulations conductor={Congrats} />
           </div>
 
           {/* ------ BUTTON SCALED ------- */}
@@ -121,7 +145,7 @@ const page = () => {
             } transition duration-500 ease-in-out`}
           >
             {/* <CreateCache buttonscaled={setButtonScaled} /> */}
-            <Congratulations />
+            <CreateCache buttonscaled={setButtonScaled} />
           </div>
 
           {/* ------ VIEWCACHE ------- */}
@@ -130,7 +154,20 @@ const page = () => {
               View_Cache ? "-translate-y-[15vh]" : "translate-y-[120vh]"
             } transition duration-500 ease-in-out`}
           >
-            <ViewCache buttonscaled={setViewCache} jsoninfo={RSelected} />
+            <ViewCache
+              buttonscaled={setViewCache}
+              jsoninfo={RSelected}
+              winflag={setCongrats}
+            />
+          </div>
+
+          {/* ------ VIEWCACHE ------- */}
+          <div
+            className={`${
+              Prized ? "-translate-y-[15vh]" : "translate-y-[120vh]"
+            } transition duration-500 ease-in-out z-50`}
+          >
+            <Prize timer={Prized} setSelf={setPrize} />
           </div>
         </div>
       </div>

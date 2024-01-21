@@ -12,9 +12,16 @@ import profile from "@/assets/vector/dash/view_cache/profile.png"
 import sample from "@/assets/vector/dash/view_cache/sample.png"
 
 import Happy from "@/assets/vector/dash/congrats/Happy.png"
+import botle from "@/assets/vector/dash/congrats/botle.png"
+
+import home from "@/assets/raster/home.png"
 ///____LOGIN____///
 import guy from "@/assets/raster/guy.png"
 
+///____PROFILE____///
+import emptiness from "@/assets/raster/emptiness.png"
+
+
 export {
-    create_button, logo, road_trip, Create_Cache, gold, back, map, profile, sample, Happy, guy
+    create_button, logo, road_trip, Create_Cache, gold, back, map, profile, sample, Happy, botle, home, guy, emptiness
 }

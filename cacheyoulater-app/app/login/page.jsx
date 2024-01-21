@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { road_trip, guy } from "@/assets";
 import { useRouter } from "next/navigation";
-import create from "../utils/cookies";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
