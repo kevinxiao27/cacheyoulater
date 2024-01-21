@@ -1,11 +1,8 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import { road_trip, guy } from "@/assets"
-import PocketBase from "pocketbase"
-
-const pb = new PocketBase("https://pocketbasecacheyoulater.fly.dev")
 
 const LoginPage = () => {
   const [username, setUsername] = useState("")
