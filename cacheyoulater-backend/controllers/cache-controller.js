@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const addCache = async (req, res, next) => {
-  userId = req.params.id;
+  const userId = req.params.id;
   // const extractedToken = req.headers.authorization.split(" ")[1];
   // if (!extractedToken || extractedToken.trim() === "") {
   //   return res.status(404).json({ message: "Token not found" });
