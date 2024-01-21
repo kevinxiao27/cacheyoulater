@@ -63,13 +63,13 @@ const page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/cache");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(data);
-        setCaches(data.caches);
+        // const response = await fetch("http://localhost:8080/cache");
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! Status: ${response.status}`);
+        // }
+        // const data = await response.json();
+        // console.log(data);
+        // setCaches(data.caches);
       } catch (error) {
         console.error("Error fetching data:", error);
         // Handle the error

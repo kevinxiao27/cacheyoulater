@@ -44,12 +44,13 @@ const page = () => {
   const [Bruh, setBruh] = useState(true);
   const [caches, setCaches] = useState([]);
 
+  const path = usePathname();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const path = usePathname();
         const userid = path.split("/")[2];
-        //   console.log(userid);
+          console.log(userid);
         const response = await fetch(
           `http://localhost:8080/user/friends/${userid}`
         );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Happy3, home } from "@/assets";
 import Image from "next/image";
+import { useGeolocated } from "react-geolocated";
 
 const Confirm = ({ setSelf, setNext, setPrev }) => {
     const canvasStyles = {
@@ -14,11 +15,19 @@ const Confirm = ({ setSelf, setNext, setPrev }) => {
         left: 0,
     };
 
+    const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+        useGeolocated({
+            positionOptions: {
+                enableHighAccuracy: false,
+            },
+            userDecisionTimeout: 5000,
+        });
+
     const arow = () => {
-        setSelf(false)
-        setNext(true)
-        setPrev(false)
-    }
+        setSelf(false);
+        setNext(true);
+        setPrev(false);
+    };
 
     // useEffect(() => {
     //     console.log("ra");
