@@ -70,92 +70,83 @@ export const addCache = async (req, res, next) => {
 export const updateCache = async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1]
   const id = req.params.id
-  let bulletin
+  let cache
 
   try {
-    bulletin = await Cache.findById(id)
+    cache = await Cache.findById(id)
   } catch (error) {
     console.log(error)
   }
 
-  if (!bulletin) {
+  if (!cache) {
     return res.status(404).json({ message: "Failed to find Cache" })
   }
   if (!extractedToken || extractedToken.trim() === "") {
     return res.status(404).json({ message: "Token not found" })
   }
 
-  let orgId
+  let userId
   // verify -- then decrypt the token ==> then store the admin id from the token
   jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
     if (err) {
       return res.status(400).json({ message: `${err.message}` })
     } else {
-      orgId = decrypted.id
+      userId = decrypted.id
       return
     }
   })
 
-  if (bulletin.organization != orgId) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized to complete this action" })
+  if (cache.owner != userId) {
+    return res.status(401)
   }
 
-  const { title, description, date, posterUrl, featured, registered } = req.body
+  const { title, description } = req.body
 
   if (
     !title ||
     title.trim() === "" ||
     !description ||
-    description.trim() === "" ||
-    !date ||
-    date.trim() === ""
+    description.trim() === ""
   ) {
     return res.status(422).json({
       message:
         "Invalid Inputs. Please check that your title, description, and date format is correct and not empty.",
     })
   }
-  let updateBulletin
+  let updateCache
   try {
-    updateBulletin = await Cache.findByIdAndUpdate(id, {
+    updateCache = await Cache.findByIdAndUpdate(id, {
       title,
       description,
-      orgId,
-      date,
-      posterUrl,
-      featured,
-      registered,
     })
   } catch (error) {
     return console.log(error)
   }
 
-  if (!updateBulletin) {
+  if (!updateCache) {
     return res.status(500).json({ message: "Cache request failed." })
   }
 
-  return res.status(200).json({ updateBulletin })
+  return res.status(200).json({ updateBulletin: updateCache })
 }
 
 export const getAllCaches = async (req, res, next) => {
-  let bulletins
+  let caches
 
   try {
-    bulletins = await Cache.find()
+    caches = await Cache.find()
   } catch (error) {
     console.log(error)
   }
 
-  if (!bulletins) {
+  if (!caches) {
     return res.status(500).json({ message: "Failed to get Bulletins" })
   }
 
-  return res.status(200).json({ bulletins })
+  return res.status(200).json({ bulletins: caches })
 }
 
-export const getBulletinById = async (req, res, next) => {
+export const getCacheById = async (req, res, next) => {
   const id = req.params.id
   let bulletin
 

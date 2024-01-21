@@ -4,7 +4,7 @@ import {
   deleteCache,
   deregisterUser,
   getAllCaches,
-  getBulletinById,
+  getCacheById,
   registerUser,
   updateCache,
 } from "../controllers/cache-controller.js"
@@ -12,7 +12,7 @@ import {
 const cacheRouter = express()
 
 cacheRouter.get("/", getAllCaches)
-cacheRouter.get("/:id", getBulletinById)
+cacheRouter.get("/:id", getCacheById)
 cacheRouter.post("/add", addCache)
 cacheRouter.put("/:id", updateCache)
 cacheRouter.put("/register/:id", registerUser)
