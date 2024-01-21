@@ -2,11 +2,30 @@
 
 import { logo, create_button, Create_Cache, back, gold } from "@/assets";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Box from "./Box";
 
 const page = () => {
     const [ButtonScaled, setButtonScaled] = useState(false);
+
+    const [isVisible, setIsVisible] = useState(true);
+
+    const [Bruh, setBruh] = useState(true)
+
+    const handleScroll = () => {
+        const scroll = window.scrollY;
+        console.log(scroll, isVisible);
+         
+        const shouldBeVisible = scroll <= 40;
+        if (shouldBeVisible === isVisible) return;
+        setIsVisible(shouldBeVisible);
+      };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        setBruh(!Bruh)
+        console.log(window.scrollY);
+    }, []);
 
     return (
         <div className="relative w-screen h-screen z-20">
@@ -17,7 +36,9 @@ const page = () => {
                         width={200}
                         height={200}
                         alt={"bruh this is jsut a test chill"}
-                        className={`ml-2 -mt-8 z-10`}
+                        className={`ml-2 -mt-8 z-10 visible transition-transform duration-300 transform ${
+                            isVisible ? "opacity-100" : "opacity-0"
+                        }`}
                     />
                 </div>
                 <div className="w-screen h-screen overflow-hidden relative pointer-events-none">
@@ -41,9 +62,7 @@ const page = () => {
                                 : "translate-y-[100vh]"
                         } transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
                     >
-                        <div
-                            className="bg-white w-screen h-screen z-10 overflow-hidden"
-                        >
+                        <div className="bg-white w-screen h-screen z-10 overflow-hidden">
                             <div className="absolute right-5 -mt-12">
                                 <Image
                                     src={back}
