@@ -1,12 +1,12 @@
 "use client";
 
 import {
-    logo,
-    create_button,
-    Create_Cache,
-    back,
-    gold,
-    profile,
+  logo,
+  create_button,
+  Create_Cache,
+  back,
+  gold,
+  profile,
 } from "@/assets";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState, useInterval } from "react";
@@ -27,15 +27,15 @@ const page = () => {
     const [Prized, setPrize] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
 
-    const [RSelected, setRSelected] = useState({
-        date: "000-00-00",
-        description: "---not-found---",
-        file: { type: "Buffer", data: Array(6) },
-        gps: "---not-found---",
-        owner: "---not-found---",
-        title: "Test ---not-found--- changed name!",
-        unlockedUsers: ["---not-found---"],
-    });
+  const [RSelected, setRSelected] = useState({
+    date: "000-00-00",
+    description: "---not-found---",
+    file: { type: "Buffer", data: Array(6) },
+    gps: "---not-found---",
+    owner: "---not-found---",
+    title: "Test ---not-found--- changed name!",
+    unlockedUsers: ["---not-found---"],
+  });
 
     const [caches, setCaches] = useState([]);
 
@@ -59,23 +59,23 @@ const page = () => {
         }
     }, [Made]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("http://localhost:8080/cache");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log(data);
-                setCaches(data.caches);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                // Handle the error
-            }
-        };
-        fetchData(); // Call the fetchData function when the component mounts
-    }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/cache");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        setCaches(data.caches);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error
+      }
+    };
+    fetchData(); // Call the fetchData function when the component mounts
+  }, []);
 
 
     return (
@@ -174,48 +174,48 @@ const page = () => {
                         <Confirm conductor={Made0} setSelf={setMade0} setNext={setMade} setPrev={setButtonScaled}/>
                     </div>
 
-                    {/* ------ VIEWCACHE ------- */}
-                    <div
-                        className={`${
-                            View_Cache
-                                ? "-translate-y-[15vh]"
-                                : "translate-y-[120vh]"
-                        } transition duration-500 ease-in-out`}
-                    >
-                        <ViewCache
-                            buttonscaled={setViewCache}
-                            jsoninfo={RSelected}
-                            winflag={setCongrats}
-                        />
-                    </div>
+          {/* ------ VIEWCACHE ------- */}
+          <div
+            className={`${
+              View_Cache ? "-translate-y-[15vh]" : "translate-y-[120vh]"
+            } transition duration-500 ease-in-out`}
+          >
+            <ViewCache
+              buttonscaled={setViewCache}
+              jsoninfo={RSelected}
+              winflag={setCongrats}
+            />
+          </div>
 
-                    {/* ------ VIEWCACHE ------- */}
-                    <div
-                        className={`${
-                            Prized
-                                ? "-translate-y-[15vh]"
-                                : "translate-y-[120vh]"
-                        } transition duration-500 ease-in-out z-50`}
-                    >
-                        <Prize timer={Prized} setSelf={setPrize}/>
-                    </div>
-                </div>
-            </div>
-
-            {/* ------ BOXES ------- */}
-
-            <div className="bg-white w-screen flex flex-col justify-center items-center gap-5">
-                {/* BOXES */}
-                <div className="w-screen h-[10vh] overflow-visible" />
-
-                {caches.map((cache) => (
-                    <div className="mb-2" onClick={() => setViewCache(true)}>
-                        <Box jsoninfo={setRSelected}>{cache}</Box>
-                    </div>
-                ))}
-            </div>
+          {/* ------ VIEWCACHE ------- */}
+          <div
+            className={`${
+              Prized ? "-translate-y-[15vh]" : "translate-y-[120vh]"
+            } transition duration-500 ease-in-out z-50`}
+          >
+            <Prize timer={Prized} setSelf={setPrize} />
+          </div>
         </div>
-    );
+      </div>
+
+      {/* ------ BOXES ------- */}
+
+      <div className="bg-white w-screen flex flex-col justify-center items-center gap-5">
+        {/* BOXES */}
+        <div className="w-screen h-[10vh] overflow-visible" />
+
+        {caches.map((cache) => (
+          <div
+            key={cache._id}
+            className="mb-2"
+            onClick={() => setViewCache(true)}
+          >
+            <Box jsoninfo={setRSelected}>{cache}</Box>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default page;

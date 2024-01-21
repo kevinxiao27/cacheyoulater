@@ -4,21 +4,22 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const addCache = async (req, res, next) => {
-  const extractedToken = req.headers.authorization.split(" ")[1];
-  if (!extractedToken || extractedToken.trim() === "") {
-    return res.status(404).json({ message: "Token not found" });
-  }
+  userId = req.params.id;
+  // const extractedToken = req.headers.authorization.split(" ")[1];
+  // if (!extractedToken || extractedToken.trim() === "") {
+  //   return res.status(404).json({ message: "Token not found" });
+  // }
 
-  let userId;
+  // let userId;
   // verify -- then decrypt the token ==> then store the admin id from the token
-  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
-    if (err) {
-      return res.status(400).json({ message: `${err.message}` });
-    } else {
-      userId = decrypted.id;
-      return;
-    }
-  });
+  // jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+  //   if (err) {
+  //     return res.status(400).json({ message: `${err.message}` });
+  //   } else {
+  //     userId = decrypted.id;
+  //     return;
+  //   }
+  // });
 
   const { title, file, description, date, gps, hint } = req.body;
 

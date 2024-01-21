@@ -3,11 +3,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { road_trip, guy } from "@/assets";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
+  function navigate() {
+    router.push("/dash");
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,12 +30,12 @@ const LoginPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
+      }).then((t) => t.json());
 
-      const responseData = await response.json();
+      const token = response.token;
+      console.log(token);
 
-      // Handle the response as needed
-      console.log(responseData);
+      navigate();
     } catch (error) {
       // Handle any errors that occur during the request
       console.error(error);
