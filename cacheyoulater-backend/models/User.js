@@ -1,7 +1,7 @@
-import mongoose from "mongoose"
-import validator from "validator"
+import mongoose from "mongoose";
+import validator from "validator";
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 const userSchema = new Schema({
   username: {
     type: String,
@@ -22,10 +22,10 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minLength: 8,
+    minLength: 6,
     validate: {
       validator: function (value) {
-        return value.length >= 6
+        return value.length >= 6;
       },
       message: () => "Password must be at least six characters long",
     },
@@ -33,6 +33,6 @@ const userSchema = new Schema({
   friends: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   ownedCaches: [{ type: mongoose.Types.ObjectId, ref: "Cache" }],
   unlockedCaches: [{ type: mongoose.Types.ObjectId, ref: "Cache" }],
-})
+});
 
-export default mongoose.model("User", userSchema)
+export default mongoose.model("User", userSchema);
