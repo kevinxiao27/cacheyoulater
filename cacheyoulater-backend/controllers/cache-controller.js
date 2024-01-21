@@ -20,7 +20,7 @@ export const addCache = async (req, res, next) => {
     }
   })
 
-  const { title, description, date, posterUrl, featured, registered } = req.body
+  const { title, file, description, date, gps } = req.body
 
   if (
     !title ||
@@ -28,7 +28,10 @@ export const addCache = async (req, res, next) => {
     !description ||
     description.trim() === "" ||
     !date ||
-    date.trim() === ""
+    date.trim() === "" ||
+    !file ||
+    !gps ||
+    gps.trim() === ""
   ) {
     return res.status(422).json({
       message:
@@ -36,33 +39,32 @@ export const addCache = async (req, res, next) => {
     })
   }
 
-  let bulletin
+  let cache
   try {
-    bulletin = new Cache({
+    cache = new Cache({
       title,
+      file,
+      gps,
       description,
-      organization: orgId,
       date,
-      posterUrl,
-      featured,
-      registered,
+      owner: userId,
     })
     const session = await mongoose.startSession()
-    const user = await User.findById(orgId)
+    const user = await User.findById(userId)
     session.startTransaction()
-    await bulletin.save({ session })
-    user.bulletins.push(bulletin)
+    await cache.save({ session })
+    user.ownedCaches.push(cache)
     await user.save({ session })
     await session.commitTransaction()
   } catch (error) {
     return console.log(error)
   }
 
-  if (!bulletin) {
+  if (!cache) {
     return res.status(500).json({ message: "Cache request failed." })
   }
 
-  return res.status(200).json({ bulletin })
+  return res.status(200).json({ bulletin: cache })
 }
 
 export const updateCache = async (req, res, next) => {
@@ -279,15 +281,15 @@ export const registerUser = async (req, res, next) => {
 export const deregisterUser = async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1]
   const id = req.params.id
-  let bulletin
+  let cache
 
   try {
-    bulletin = await Cache.findById(id)
+    cache = await Cache.findById(id)
   } catch (error) {
     console.log(error)
   }
 
-  if (!bulletin) {
+  if (!cache) {
     return res.status(404).json({ message: "Failed to find Cache" })
   }
   if (!extractedToken || extractedToken.trim() === "") {
@@ -309,8 +311,8 @@ export const deregisterUser = async (req, res, next) => {
     const session = await mongoose.startSession()
     const user = await User.findById(userId)
     session.startTransaction()
-    bulletin.registered.pull(user)
-    user.registeredBulletins.pull(bulletin)
+    cache.registered.pull(user)
+    user.registeredBulletins.pull(cache)
     await user.save({ session })
     await session.commitTransaction()
   } catch (error) {

@@ -1,6 +1,7 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose"
 
 export const getAllUsers = async (req, res, next) => {
   let users
@@ -161,4 +162,106 @@ export const deleteUser = async (req, res, next) => {
   }
   console.log(user)
   res.status(200).json({ message: "User Deleted Successfully" })
+}
+
+export const addFriend = async (req, res, next) => {
+  const extractedToken = req.headers.authorization.split(" ")[1]
+  const friend_id = req.params.id
+
+  if (!extractedToken && extractedToken.trim() === "") {
+    return res.status(404).json({ message: "Token not found." })
+  }
+
+  let userId
+  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+    if (err) {
+      return res.status(400).json({ message: `${err.message}` })
+    } else {
+      userId = decrypted.id
+      return
+    }
+  })
+
+  if (userId == friend_id) {
+    return res.status(401).json({ message: "Cannot friend yourself" })
+  }
+
+  let user
+  try {
+    user = await User.findById(userId)
+  } catch (error) {
+    return res.status(404).json({ message: "User not found" })
+  }
+
+  if (user.friends.includes(friend_id)) {
+    return res.status(200).json({ message: "User already friended" })
+  }
+
+  let friend
+  try {
+    friend = await User.findById(friend_id)
+  } catch (error) {
+    return res.status(404).json({ message: "Friend not found" })
+  }
+
+  try {
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    user.friends.push(friend)
+    friend.friends.push(user)
+    await friend.save({ session })
+    await user.save({ session })
+    await session.commitTransaction()
+  } catch (error) {
+    return console.log(error)
+  }
+
+  res.status(200).json({ message: "User friended successfully" })
+}
+
+export const removeFriend = async (req, res, next) => {
+  const extractedToken = req.headers.authorization.split(" ")[1]
+  const friend_id = req.params.id
+
+  if (!extractedToken && extractedToken.trim() === "") {
+    return res.status(404).json({ message: "Token not found." })
+  }
+
+  let userId
+  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+    if (err) {
+      return res.status(400).json({ message: `${err.message}` })
+    } else {
+      userId = decrypted.id
+      return
+    }
+  })
+
+  if (userId == friend_id) {
+    return res.status(401).json({ message: "Cannot unfriend yourself" })
+  }
+
+  let friend
+  try {
+    friend = await User.findById(friend_id)
+    console.log(friend.friends)
+  } catch (error) {
+    return res.status(404).json({ message: "User not found" })
+  }
+
+  try {
+    const session = await mongoose.startSession()
+    const user = await User.findById(userId)
+    // const friend = await User.findById(friend_id)
+    session.startTransaction()
+    user.friends.pull(friend)
+    friend.friends.pull(user)
+    await friend.save({ session })
+    await user.save({ session })
+    await session.commitTransaction()
+  } catch (error) {
+    return console.log(error)
+  }
+
+  res.status(200).json({ message: "User unfriended successfully" })
 }
