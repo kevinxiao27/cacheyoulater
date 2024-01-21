@@ -11,7 +11,11 @@ import {
     sample,
 } from "@/assets";
 
-const ViewCache = ({ buttonscaled, jsoninfo }) => {
+const ViewCache = ({ buttonscaled, jsoninfo, winflag }) => {
+    const signal = () => {
+        buttonscaled(false);
+        winflag(true);
+    }
     return (
         <div
             className={`transition duration-500 ease-in-out absolute z-50 overscroll-none overflow-hidden pointer-events-auto`}
@@ -63,19 +67,20 @@ const ViewCache = ({ buttonscaled, jsoninfo }) => {
                     <div className="rounded-full outline-2 outline-black sm:w-1/3 w-2/3 border-2 border-black">
                         <button
                             type="submit"
-                            className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl z-20"
+                            className="bg-[#F37021] rounded-full outline-2 outline-black w-full flex flex-row justify-center items-center text-xl z-50"
+                            onMouseDown={()=>{signal()}}
                         >
                             Upload Image
                         </button>
                     </div>
                 </div>
-                <div className="w-screen flex flex-row justify-center items-center z-10 hover:cursor-pointer -mt-4">
+                <div className="w-screen flex flex-row justify-center items-center z-10 hover:cursor-pointer -mt-4 pointer-events-none">
                     <Image
                         src={map}
                         width={1000}
                         height={1000}
                         alt={"gold"}
-                        className=""
+                        className="z-40"
                     />
                 </div>
             </div>
