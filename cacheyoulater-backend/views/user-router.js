@@ -1,4 +1,4 @@
-import express from "express";
+import express from "express"
 import {
   getAllUsers,
   createUser,
@@ -8,17 +8,17 @@ import {
   addFriend,
   removeFriend,
   getAllFriendCaches,
-} from "../controllers/user-controller.js";
+} from "../controllers/user-controller.js"
 
-const userRouter = express.Router();
+const userRouter = express.Router()
 
-userRouter.get("/", getAllUsers);
-userRouter.get("/friends/:id", getAllFriendCaches);
-userRouter.post("/sign-up", createUser);
-userRouter.post("/login", login);
-userRouter.put("/:id", updateUser);
-userRouter.put("/friend/:id", addFriend);
-userRouter.put("/unfriend/:id", removeFriend);
-userRouter.delete("/:id", deleteUser);
+userRouter.get("/", getAllUsers)
+userRouter.get("/friends/:id", getAllFriendCaches)
+userRouter.post("/sign-up", createUser)
+userRouter.post("/login", login)
+userRouter.put("/:id", updateUser)
+userRouter.put("/friend", addFriend)
+userRouter.put("/unfriend", removeFriend)
+userRouter.delete("/:id", deleteUser)
 
-export default userRouter;
+export default userRouter

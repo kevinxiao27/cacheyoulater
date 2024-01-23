@@ -53,7 +53,8 @@ export const addCache = async (req, res, next) => {
 }
 
 export const updateCache = async (req, res, next) => {
-  const { userId, cacheId } = req.body
+  const cacheId = req.params.id
+  const { userId } = req.body
   let cache
 
   try {
@@ -118,12 +119,7 @@ export const getAllCaches = async (req, res, next) => {
 }
 
 export const getCacheById = async (req, res, next) => {
-  // const extractedToken = req.headers.authorization.split(" ")[1]
-  const { userId, cacheId } = req.body
-
-  // if (!extractedToken || extractedToken.trim() === "") {
-  //   return res.status(404).json({ message: "Token not found" })
-  // }
+  const cacheId = req.params.id
 
   let cache
   try {
@@ -134,14 +130,6 @@ export const getCacheById = async (req, res, next) => {
 
   if (!cache) {
     return res.status(404).json({ message: "Failed to find Cache" })
-  }
-
-  console.log(cache)
-  // console.log(cache)
-  if (cache.owner != userId && !cache.unlockedUsers.includes(userId)) {
-    return res
-      .status(401)
-      .json({ cache, message: "Haven't Unlocked this Cache" })
   }
 
   return res.status(200).json({ cache })
@@ -181,7 +169,8 @@ export const deleteCache = async (req, res, next) => {
 
 export const unlockCache = async (req, res, next) => {
   // const extractedToken = req.headers.authorization.split(" ")[1]
-  const { cacheId, userId } = req.body
+  const cacheId = req.params.id
+  const { userId } = req.body
   let cache
 
   try {
