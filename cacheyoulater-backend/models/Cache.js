@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import mongodb from "mongodb";
+import mongoose from "mongoose"
 
 const cacheSchema = new mongoose.Schema({
   title: {
@@ -32,6 +31,6 @@ const cacheSchema = new mongoose.Schema({
     required: true,
   },
   unlockedUsers: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-});
+})
 
-export default mongoose.model("Cache", cacheSchema);
+export default mongoose.model("Cache", cacheSchema)

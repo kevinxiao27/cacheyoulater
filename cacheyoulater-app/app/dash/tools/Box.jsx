@@ -1,3 +1,5 @@
+import { sample } from "@/assets";
+import Image from "next/image";
 import React from "react";
 
 const Box = (props) => {
@@ -11,6 +13,7 @@ const Box = (props) => {
             }}
         >
             <div>
+                <Image src={sample} height={200}/>
                 <h1 className="font-bold mx-5 mt-3 mb-2 uppercase">
                     {props.children.title}
                 </h1>
