@@ -19,6 +19,6 @@ userRouter.post("/login", login)
 userRouter.put("/:id", updateUser)
 userRouter.put("/friend", addFriend)
 userRouter.put("/unfriend", removeFriend)
-userRouter.delete("/:id", deleteUser)
+userRouter.delete("/", deleteUser)
 
 export default userRouter
