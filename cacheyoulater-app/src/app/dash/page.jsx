@@ -1,5 +1,5 @@
 import Image from "next/image";
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar";
 
 const Home = async () => {
   const response = await fetch("http://localhost:8080/user").catch((e) =>
