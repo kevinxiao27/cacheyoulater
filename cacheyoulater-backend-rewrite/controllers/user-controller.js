@@ -20,17 +20,6 @@ export const getAllUsers = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
   const { username, email, password } = req.body;
-
-  if (
-    !username ||
-    username.trim() === "" ||
-    !email ||
-    email.trim() === "" ||
-    !password ||
-    password.trim() === ""
-  ) {
-    return res.status(422).json({ message: "Please enter valid inputs." });
-  }
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   let emailExists = await User.findOne({ email });
@@ -57,15 +46,11 @@ export const createUser = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, password } = req.body;
 
   let foundUser;
   try {
-    if (!username) {
-      foundUser = await User.findOne({ email });
-    } else {
-      foundUser = await User.findOne({ username });
-    }
+    foundUser = await User.findOne({ username });
   } catch (error) {
     return console.log(error);
   }
@@ -86,13 +71,12 @@ export const login = async (req, res, next) => {
   return res.status(200).json({
     message: "User logged in successfully",
     token,
-    id: foundUser._id,
   });
 };
 
 export const updateUser = async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1];
-  const id = req.params.id;
+  const id = req.id;
   const { username, email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
   let user;
@@ -115,24 +99,18 @@ export const updateUser = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized to edit" });
   }
 
-  if (
-    !username &&
-    username.trim() === "" &&
-    !email &&
-    email.trim() === "" &&
-    !password &&
-    password.trim() === ""
-  ) {
-    return res.status(422).json({ message: "Invalid Inputs" });
-  }
-
+  let currentUser = await User.findById(userId);
   let emailExists = await User.findOne({ email });
   let userExists = await User.findOne({ username });
 
   if (emailExists) {
-    return res.status(400).json({ message: "Email is already in use." });
+    if (!(currentUser.username == emailExists.username)) {
+      return res.status(400).json({ message: "Email is already in use." });
+    }
   } else if (userExists) {
-    return res.status(400).json({ message: "Username is already in use." });
+    if (!(currentUser.username == userExists.username)) {
+      return res.status(400).json({ message: "Username is already in use." });
+    }
   }
 
   try {

@@ -4,41 +4,23 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const addCache = async (req, res, next) => {
-  const userId = req.params.id;
-  // const extractedToken = req.headers.authorization.split(" ")[1];
-  // if (!extractedToken || extractedToken.trim() === "") {
-  //   return res.status(404).json({ message: "Token not found" });
-  // }
+  const extractedToken = req.headers.authorization.split(" ")[1];
+  if (!extractedToken || extractedToken.trim() === "") {
+    return res.status(404).json({ message: "Token not found" });
+  }
 
-  // let userId;
+  let userId;
   // verify -- then decrypt the token ==> then store the admin id from the token
-  // jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
-  //   if (err) {
-  //     return res.status(400).json({ message: `${err.message}` });
-  //   } else {
-  //     userId = decrypted.id;
-  //     return;
-  //   }
-  // });
+  jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
+    if (err) {
+      return res.status(400).json({ message: `${err.message}` });
+    } else {
+      userId = decrypted.id;
+      return;
+    }
+  });
 
   const { title, file, description, date, gps, hint } = req.body;
-
-  if (
-    !title ||
-    title.trim() === "" ||
-    !description ||
-    description.trim() === "" ||
-    !date ||
-    date.trim() === "" ||
-    !file ||
-    !gps ||
-    gps.trim() === ""
-  ) {
-    return res.status(422).json({
-      message:
-        "Invalid Inputs. Please check that your title, description, and date format is correct and not empty.",
-    });
-  }
 
   let cache;
   try {

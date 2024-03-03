@@ -31,6 +31,8 @@ const userSchema = new Schema({
     },
   },
   friends: [{ type: mongoose.Types.ObjectId, ref: "User" }],
+  incomingRequests: [{ type: mongoose.Types.ObjectId, ref: "User" }],
+  outgoingRequests: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   ownedCaches: [{ type: mongoose.Types.ObjectId, ref: "Cache" }],
   unlockedCaches: [{ type: mongoose.Types.ObjectId, ref: "Cache" }],
 });
