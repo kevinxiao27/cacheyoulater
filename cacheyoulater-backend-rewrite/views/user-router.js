@@ -7,7 +7,6 @@ import {
   updateUser,
   deleteUser,
   addFriend,
-  removeFriend,
   getAllFriendCaches,
 } from "../controllers/user-controller.js";
 import auth from "../middlewares/auth.js";
@@ -49,8 +48,7 @@ userRouter.put(
   ],
   updateUser
 );
-userRouter.put("/friend/:id", addFriend);
-userRouter.put("/unfriend/:id", removeFriend);
-userRouter.delete("/:id", deleteUser);
+userRouter.put("/friend/:id", auth, addFriend);
+userRouter.delete("/", auth, deleteUser);
 
 export default userRouter;
