@@ -168,8 +168,8 @@ export const addFriend = async (req, res, next) => {
     return res.status(404).json({ message: "Error fetching account data" });
   }
 
-  if (user.friends.includes(friend_id)) {
-    return res.status(200).json({ message: "User already friended" });
+  if (user.outgoingRequests.includes(friend_id)) {
+    return res.status(200).json({ message: "Already requested to friend" });
   }
 
   let friend;
