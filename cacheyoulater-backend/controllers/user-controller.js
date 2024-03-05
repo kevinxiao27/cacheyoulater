@@ -20,14 +20,6 @@ export const getAllUsers = async (req, res, next) => {
 };
 
 export const createUser = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-
   const { username, email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -55,13 +47,6 @@ export const createUser = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
   const { username, password } = req.body;
 
   let foundUser;
@@ -91,13 +76,6 @@ export const login = async (req, res, next) => {
 };
 
 export const updateUser = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
   const id = req.id;
   const { username, email, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -145,15 +123,7 @@ export const deleteUser = async (req, res, next) => {
   res.status(200).json({ message: "User Deleted Successfully" });
 };
 
-export const addFriend = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-
+export const requestFriend = async (req, res, next) => {
   const userId = req.id;
   const friend_id = req.params.id;
 
@@ -162,14 +132,11 @@ export const addFriend = async (req, res, next) => {
   }
 
   let user;
+
   try {
     user = await User.findById(userId);
   } catch (error) {
     return res.status(404).json({ message: "Error fetching account data" });
-  }
-
-  if (user.outgoingRequests.includes(friend_id)) {
-    return res.status(200).json({ message: "Already requested to friend" });
   }
 
   let friend;
@@ -179,6 +146,34 @@ export const addFriend = async (req, res, next) => {
     return res
       .status(404)
       .json({ message: "Error fetching friend account data" });
+  }
+
+  if (user.friends.includes(friend_id)) {
+    return res.status(400).json({ message: "Already friends" });
+  }
+
+  if (user.outgoingRequests.includes(friend_id)) {
+    return res.status(400).json({ message: "Already requested to friend" });
+  }
+
+  if (user.incomingRequests.includes(friend._id)) {
+    try {
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      user.friends.push(friend._id);
+      user.incomingRequests.pull(friend._id);
+      friend.friends.push(user._id);
+      friend.outgoingRequests.pull(user._id);
+      await friend.save({ session });
+      await user.save({ session });
+      await session.commitTransaction();
+    } catch (error) {
+      return console.log(error);
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Request exists, user friended successfully" });
   }
 
   try {
@@ -193,72 +188,152 @@ export const addFriend = async (req, res, next) => {
     return console.log(error);
   }
 
+  res.status(200).json({ message: "User friend-requested successfully" });
+};
+
+export const acceptRequest = async (req, res, next) => {
+  const userId = req.id;
+  const friend_id = req.params.id;
+
+  if (userId == friend_id) {
+    return res.status(401).json({ message: "Cannot friend yourself" });
+  }
+
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    return res.status(404).json({ message: "Error fetching account data" });
+  }
+
+  if (!user.incomingRequests.includes(friend_id)) {
+    return res
+      .status(200)
+      .json({ message: "Cannot accept request that does not exist" });
+  }
+
+  let friend;
+  try {
+    friend = await User.findById(friend_id);
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ message: "Error fetching friend account data" });
+  }
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    user.incomingRequests.pull(friend._id);
+    friend.outgoingRequests.pull(user._id);
+    user.friends.push(friend._id);
+    friend.friends.push(user._id);
+    await friend.save({ session });
+    await user.save({ session });
+    await session.commitTransaction();
+  } catch (error) {
+    return console.log(error);
+  }
+
   res.status(200).json({ message: "User friended successfully" });
 };
 
-// export const removeFriend = async (req, res, next) => {
-//   const extractedToken = req.headers.authorization.split(" ")[1];
-//   const friend_id = req.params.id;
+export const deleteRequest = async (req, res, next) => {
+  const user_id = req.id;
+  const friend_id = req.params.id;
 
-//   if (!extractedToken && extractedToken.trim() === "") {
-//     return res.status(404).json({ message: "Token not found." });
-//   }
+  if (user_id == friend_id) {
+    return res.status(401).json({ message: "Cannot friend yourself" });
+  }
 
-//   let userId;
-//   jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
-//     if (err) {
-//       return res.status(400).json({ message: `${err.message}` });
-//     } else {
-//       userId = decrypted.id;
-//       return;
-//     }
-//   });
+  let user;
+  try {
+    user = await User.findById(user_id);
+  } catch (error) {
+    return res.status(404).json({ message: "Error fetching account data" });
+  }
 
-//   if (userId == friend_id) {
-//     return res.status(401).json({ message: "Cannot unfriend yourself" });
-//   }
+  if (
+    !user.outgoingRequests.includes(friend_id) &&
+    !user.incomingRequests.includes(user_id)
+  ) {
+    return res
+      .status(200)
+      .json({ message: "Cannot remove request that does not exist" });
+  }
 
-//   let friend;
-//   try {
-//     friend = await User.findById(friend_id);
-//     console.log(friend.friends);
-//   } catch (error) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
+  let friend;
+  try {
+    friend = await User.findById(friend_id);
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ message: "Error fetching friend account data" });
+  }
 
-//   try {
-//     const session = await mongoose.startSession();
-//     const user = await User.findById(userId);
-//     // const friend = await User.findById(friend_id)
-//     session.startTransaction();
-//     user.friends.pull(friend);
-//     friend.friends.pull(user);
-//     await friend.save({ session });
-//     await user.save({ session });
-//     await session.commitTransaction();
-//   } catch (error) {
-//     return console.log(error);
-//   }
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    user.outgoingRequests.pull(friend._id);
+    user.incomingRequests.pull(friend._id);
+    friend.incomingRequests.pull(user._id);
+    friend.outgoingRequests.pull(user._id);
+    await friend.save({ session });
+    await user.save({ session });
+    await session.commitTransaction();
+  } catch (error) {
+    return console.log(error);
+  }
 
-//   res.status(200).json({ message: "User unfriended successfully" });
-// };
+  res.status(200).json({ message: "Request removed successfully" });
+};
+
+export const removeFriend = async (req, res, next) => {
+  const userId = req.id;
+  const friend_id = req.params.id;
+
+  if (userId == friend_id) {
+    return res.status(401).json({ message: "Cannot friend yourself" });
+  }
+
+  let user;
+
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    return res.status(404).json({ message: "Error fetching account data" });
+  }
+
+  let friend;
+  try {
+    friend = await User.findById(friend_id);
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ message: "Error fetching friend account data" });
+  }
+
+  if (!(user.friends.includes(friend_id) || friend.friends.includes(userId))) {
+    return res
+      .status(200)
+      .json({ message: "Cannot remove someone without friend" });
+  }
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    user.friends.pull(friend._id);
+    friend.friends.pull(user._id);
+    await friend.save({ session });
+    await user.save({ session });
+    await session.commitTransaction();
+  } catch (error) {
+    return console.log(error);
+  }
+};
 
 export const getAllFriendCaches = async (req, res, next) => {
-  const userId = req.params.id;
-
-  // if (!extractedToken && extractedToken.trim() === "") {
-  //   return res.status(404).json({ message: "Token not found." })
-  // }
-
-  // let userId
-  // jwt.verify(extractedToken, process.env.SECRET_KEY, (err, decrypted) => {
-  //   if (err) {
-  //     return res.status(400).json({ message: `${err.message}` })
-  //   } else {
-  //     userId = decrypted.id
-  //     return
-  //   }
-  // })
+  const userId = req.id;
   const user = await User.findById(userId);
 
   let findCacheIds = []; // Initialize findCacheIds as an empty array
