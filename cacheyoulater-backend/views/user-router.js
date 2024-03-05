@@ -18,14 +18,10 @@ import { validateResults } from "../middlewares/validation.js";
 
 const userRouter = express.Router();
 
+const authChecks = [checkHeaders, validateResults, auth];
+
 userRouter.get("/", getAllUsers);
-userRouter.get(
-  "/friends",
-  checkHeaders,
-  validateResults,
-  auth,
-  getAllFriendCaches
-);
+userRouter.get("/friends", authChecks, getAllFriendCaches);
 userRouter.post(
   "/sign-up",
   [
@@ -52,37 +48,19 @@ userRouter.post(
 userRouter.put(
   "/",
   [
-    checkHeaders,
     check("username", "Please Enter a Valid Username").not().isEmpty(),
     check("email", "Please enter a valid email").isEmail(),
     check("password", "Please enter a valid password").isLength({
       min: 6,
     }),
-    validateResults,
-    auth,
+    authChecks,
   ],
   updateUser
 );
-userRouter.put(
-  "/request-friend/:id",
-  [checkHeaders, validateResults, auth],
-  requestFriend
-);
-userRouter.delete(
-  "/delete-friend/:id",
-  [checkHeaders, validateResults, auth],
-  removeFriend
-);
-userRouter.put(
-  "/accept-friend/:id",
-  [checkHeaders, validateResults, auth],
-  acceptRequest
-);
-userRouter.delete(
-  "/delete-request/:id",
-  [checkHeaders, validateResults, auth],
-  deleteRequest
-);
-userRouter.delete("/", [checkHeaders, validateResults, auth], deleteUser);
+userRouter.put("/request-friend/:id", authChecks, requestFriend);
+userRouter.delete("/delete-friend/:id", authChecks, removeFriend);
+userRouter.put("/accept-friend/:id", authChecks, acceptRequest);
+userRouter.delete("/delete-request/:id", authChecks, deleteRequest);
+userRouter.delete("/", authChecks, deleteUser);
 
 export default userRouter;

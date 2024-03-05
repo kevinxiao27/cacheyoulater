@@ -5,7 +5,8 @@
   "description": "Restful CRUD API with Node.js, Express and MongoDB",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --experimental-modules --es-module-specifier-resolution=node app.js",
+    "start": "node app.js",
+    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node app.js",
     "test": "NODE_OPTIONS='--experimental-vm-modules --es-module-specifier-resolution=node' jest"
   },
   "repository": {

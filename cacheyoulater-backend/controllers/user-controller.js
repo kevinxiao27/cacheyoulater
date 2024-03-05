@@ -3,7 +3,6 @@ import Cache from "../models/Cache.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { validationResult } from "express-validator";
 
 export const getAllUsers = async (req, res, next) => {
   let users;
